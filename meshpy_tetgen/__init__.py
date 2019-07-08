@@ -42,11 +42,13 @@ if "bpy" in locals():
     import imp
     imp.reload(run)
     imp.reload(gui)
+    imp.reload(export_to_xml)
 
 else:
     print("Importing MeshPy/TetGen")
     from . import run
     from . import gui
+    from . import export_to_xml
 
 # General import
 import bpy
