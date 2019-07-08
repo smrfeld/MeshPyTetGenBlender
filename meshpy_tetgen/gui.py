@@ -53,24 +53,26 @@ class VertexObj(bpy.types.PropertyGroup):
     def get_list(self):
         return [self.x,self.y,self.z]
 
-class FaceObj(bpy.types.PropertyGroup):
-    i = IntProperty( default = 0 )
-    j = IntProperty( default = 0 )
-    k = IntProperty( default = 0 )
+class TetObj(bpy.types.PropertyGroup):
+    v0 = IntProperty( default = 0 )
+    v1 = IntProperty( default = 0 )
+    v2 = IntProperty( default = 0 )
+    v3 = IntProperty( default = 0 )
 
     def set_from_list(self, arr):
-        self.i = arr[0]
-        self.j = arr[1]
-        self.k = arr[2]
+        self.v0 = arr[0]
+        self.v1 = arr[1]
+        self.v2 = arr[2]
+        self.v3 = arr[3]
 
     def get_list(self):
-        return [self.i,self.j,self.k]
+        return [self.v0,self.v1,self.v2,self.v3]
 
 # Class to hold the object
 class MeshPyTetGenObject(bpy.types.PropertyGroup):
     name = StringProperty ( name="Name", default="", description="Object Name" )
     vert_list = CollectionProperty(type=VertexObj, name = "Vertex list")
-    face_list = CollectionProperty(type=FaceObj, name = "Face list")
+    tet_list = CollectionProperty(type=TetObj, name = "Tet list")
 
     # Draw in list of objects
     def draw_item_in_row ( self, row ):
@@ -136,9 +138,9 @@ class ExportToXML(bpy.types.Operator):
         fname = s.filename
         obj = s.mesh_obj_list[s.active_object_index]
         vert_list = [pt.get_list() for pt in obj.vert_list]
-        face_list = [face.get_list() for face in obj.face_list]
+        tet_list = [tet.get_list() for tet in obj.tet_list]
 
-        export_to_xml.export_to_xml(fname,vert_list,face_list)
+        export_to_xml.export_to_xml(fname,vert_list,tet_list)
 
         return {"FINISHED"}
 
@@ -227,19 +229,19 @@ class MeshPyTetGenPropGroup(bpy.types.PropertyGroup):
             idx = current_object_names.index(name)
             obj = self.mesh_obj_list[idx]
 
-            # Clear vert list, face list
+            # Clear vert list, tet list
             while len(obj.vert_list) > 0:
                 obj.vert_list.remove ( 0 )
-            while len(obj.face_list) > 0:
-                obj.face_list.remove ( 0 )
+            while len(obj.tet_list) > 0:
+                obj.tet_list.remove ( 0 )
 
         obj.name = name
         for i in range(0,len(meshpy_object.points)):
             obj.vert_list.add()
             obj.vert_list[i].set_from_list(meshpy_object.points[i])
         for i in range(0,len(meshpy_object.elements)):
-            obj.face_list.add()
-            obj.face_list[i].set_from_list(meshpy_object.elements[i])
+            obj.tet_list.add()
+            obj.tet_list[i].set_from_list(meshpy_object.elements[i])
 
     # Remove a mesh object
     def remove_mesh_object(self):
