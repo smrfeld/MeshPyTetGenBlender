@@ -1,5 +1,9 @@
 # Simple interface to MeshPy / TetGen in Blender
 
+**Warning** this project is likely abandoned. The original purpose required the output of Voronoi meshes from TetGen - since MeshPy does not support the `-v` flag to do this, the goal is no longer possible.
+
+Check out the related visualization add-on for TetGen in Blender: [TetGen Viz Blender](https://github.com/smrfeld/TetGen-Viz-Blender). This uses the raw output files directly from TetGen.
+
 ## Installation
 
 Tested with Blender `2.79`.
